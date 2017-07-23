@@ -1,0 +1,45 @@
+@charset "utf-8"; 
+* {
+    margin: 3;
+    padding: 0;
+} 
+
+#messageBox {
+    width: 400px;
+    height: 400px;
+    border: 1px solid black;
+    display: inline-block; 
+    vertical-align: bottom;
+}
+
+#messageBox ul {
+    list-style: none;
+}
+
+#sidebar {
+    width: 150px;
+    height: 400px;
+    border: 1px solid black;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+#sidebar select{
+    width: 140px;
+}
+
+#sendForm {
+    float: none;
+}
+
+#username {
+    width: 250px;
+}
+
+#message {
+    width: 400px;
+}
+
+input[type="submit"] {
+    width: 150px;
+}
