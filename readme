@@ -1,1 +1,4 @@
 1) create postgresql db with using sql\create.sql
+
+PHP-5.6-x64
+PostgreSQL-9.3-x64
