@@ -8,67 +8,65 @@
     <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="js/jquery.cookie.js"></script>
     <script type="text/javascript">
-        $(function(){
-            function login(){
-                if($.cookie("username") == null){
-                    $("#username").val("");
-                    $("#username").prop("disabled", false);
-                    $("#login").val("login");
-                    $("#sendForm").hide();
-                    $("#username").focus();                    
-                }
-                else {
-                    $("#username").val($.cookie("username"));
-                    $("#username").prop("disabled", true);
-                    $("#login").val("logout");
-                    $("#sendForm").show(); 
-                    $("#message").val("");
-                    $("#message").focus(); 
-                };
+        function login(){
+            if($.cookie("username") == null){
+                $("#username").val("");
+                $("#username").prop("disabled", false);
+                $("#login").val("login");
+                $("#sendForm").hide();
+                $("#username").focus();                    
             }
+            else {
+                $("#username").val($.cookie("username"));
+                $("#username").prop("disabled", true);
+                $("#login").val("logout");
+                $("#sendForm").show(); 
+                $("#message").val("");
+                $("#message").focus(); 
+            }
+        };
+        var messageid = 0; //id последнего сообщения
+        function getChat(){
+            var roomname = $("#rooms").val();
+            var username = $.cookie("username");
+            $.ajax({
+                method: "GET",    
+                url: "php/ajax.php",
+                dataType: 'json',
+                data: {method: "getChat", messageid: messageid, roomname: roomname, username: username}
+            })
+            .done(function(msg){
+                if (messageid == 0) $("#messageBox ul").empty();
+                if (msg.length == 0) return;
+                messageid = msg[msg.length-1].id;
+                //alert(messageid);
+                for(var i=0; i<msg.length; i++){
+                    $("#messageBox ul").append("<li><b>"+msg[i].username+"</b>: "+msg[i].message+"</li>");
+                }
+                $("#messageBox").scrollTop($("#messageBox").prop("scrollHeight"));                    
+            });
+            setTimeout(arguments.callee, 2000);
+        };    
+        function sendMessage(){
+            var message = $("#message").val();
+            var roomname = $("#rooms").val();
+            var username = $.cookie("username"); 
+            $("#message").val("");
+            $.ajax({
+                method: "POST",    
+                url: "php/ajax.php",
+                data: {method: "sendMessage", message: message, roomname: roomname, username: username}
+            })
+            .done(function(msg){                                    
+                //getChat();
+                //$("#message").val("");
+            });            
+        };
+        
+        $(function(){
             login();
-
-            var messageid = 0; //id последнего сообщения
-
-            function getChat(){
-                var roomname = $("#rooms").val();
-                var username = $.cookie("username");
-                $.ajax({
-                    method: "GET",    
-                    url: "php/ajax.php",
-                    dataType: 'json',
-                    data: {method: "getChat", messageid: messageid, roomname: roomname, username: username}
-                })
-                .done(function(msg){
-                    if (messageid == 0) $("#messageBox ul").empty();
-                    if (msg.length == 0) return;
-                    messageid = msg[msg.length-1].id;
-                    //alert(messageid);
-                    for(var i=0; i<msg.length; i++){
-                        $("#messageBox ul").append("<li><b>"+msg[i].username+"</b>: "+msg[i].message+"</li>");
-                    }
-                    $("#messageBox").scrollTop($("#messageBox").prop("scrollHeight"));                    
-                });
-                setTimeout(arguments.callee, 2000);
-            };
             getChat();
             //setInterval(getChat, 2000);
-
-            function sendMessage(){
-                var message = $("#message").val();
-                var roomname = $("#rooms").val();
-                var username = $.cookie("username"); 
-                $("#message").val("");
-                $.ajax({
-                    method: "POST",    
-                    url: "php/ajax.php",
-                    data: {method: "sendMessage", message: message, roomname: roomname, username: username}
-                })
-                .done(function(msg){                                    
-                    //getChat();
-                    //$("#message").val("");
-                });            
-            };
 
             $("#loginForm").submit(function(){
                 if ($("#username").val() == "") return;
@@ -89,7 +87,7 @@
             $("#rooms").change(function(){
                 messageid = 0;
                 //getChat();
-            });
+            }); 
         });
     </script>
 </head>
